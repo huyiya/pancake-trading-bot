@@ -1,0 +1,29 @@
+{
+  "name": "pancakeswap-trading-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaoHuy26/pancakeswap-trading-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CaoHuy26/pancakeswap-trading-bot/issues"
+  },
+  "homepage": "https://github.com/CaoHuy26/pancakeswap-trading-bot#readme",
+  "dependencies": {
+    "@types/web3": "^1.2.2",
+    "abi-decoder": "^2.4.0",
+    "bignumber.js": "^9.0.1",
+    "dotenv": "^10.0.0",
+    "ethereum-input-data-decoder": "^0.3.5",
+    "typescript": "^4.4.3",
+    "web3": "^1.5.2"
+  }
+}
