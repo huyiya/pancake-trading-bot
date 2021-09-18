@@ -21,12 +21,14 @@ const main = async () => {
       if (tx?.to === PANCAKE_ROUTER) {
         const txInputDecoded = decoder(tx.input)
 
-        if (txInputDecoded?.name === 'addLiquidity') {
-          const [token0, token1] = txInputDecoded.params
+        if (txInputDecoded?.name === 'addLiquidityETH') {
+          const [token] = txInputDecoded.params
           const path = getPath(TARGET_TOKEN as string)
 
-          if (path.includes(token0) && path.includes(token1)) {
+          if (path.includes(token?.value)) {
             console.log(txInputDecoded)
+
+            // Buy token
           }
         }
       }
