@@ -3,6 +3,7 @@ import 'dotenv/config'
 import { Transaction } from 'web3-eth'
 import { PANCAKE_ROUTER } from './src/constants/constants'
 import decoder from './src/utils/decoder'
+import getPath from './src/utils/path'
 import getWeb3 from './src/utils/web3'
 
 const {
@@ -20,11 +21,11 @@ const main = async () => {
       if (tx?.to === PANCAKE_ROUTER) {
         const txInputDecoded = decoder(tx.input)
 
-        if (txInputDecoded.name === 'addLiquidity') {
+        if (txInputDecoded?.name === 'addLiquidity') {
           const [token0, token1] = txInputDecoded.params
+          const path = getPath(TARGET_TOKEN as string)
 
-          if (token0?.value === TARGET_TOKEN || token1?.value === TARGET_TOKEN) {
-            console.log(tx.hash)
+          if (path.includes(token0) && path.includes(token1)) {
             console.log(txInputDecoded)
           }
         }

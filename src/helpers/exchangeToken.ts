@@ -1,13 +1,15 @@
 import BigNumber from 'bignumber.js'
 import 'dotenv/config'
-import { PANCAKE_ROUTER, WBNB } from '../constants/constants'
+import { PANCAKE_ROUTER } from '../constants/constants'
 import { getPancakeRouter } from '../utils/contract'
+import getDeadline from '../utils/deadline'
 import getWeb3 from '../utils/web3'
 
 const sendSignedTransaction = async (
   sender: string,
   receiver: string,
   tx: any,
+  gasPrice: number,
   amountBNB?: number
 ): Promise<string | undefined> => {
   const { GAS_LIMIT, PRIVATE_KEY } = process.env
@@ -20,6 +22,7 @@ const sendSignedTransaction = async (
       to: receiver,
       value: amountBNB || 0,
       gas: GAS_LIMIT,
+      gasPrice: gasPrice,
       nonce: nonce,
       data: tx.encodeABI()
     }
@@ -39,14 +42,14 @@ const sendSignedTransaction = async (
   }
 }
 
-const buyToken = async (sender: string, token: string, amount: number): Promise<string | undefined> => {
+const buyToken = async (sender: string, path: string[], gasPrice: number, amount: number): Promise<string | undefined> => {
   const pancakeRouter = getPancakeRouter()
 
   const params = {
     amountOutMin: 0,
-    path: [WBNB, token],
+    path,
     to: sender,
-    deadline: Math.round(new Date().getTime() / 1000) + 30
+    deadline: getDeadline()
   }
 
   /**
@@ -67,7 +70,8 @@ const buyToken = async (sender: string, token: string, amount: number): Promise<
     sender,
     PANCAKE_ROUTER,
     transaction,
-    Number(new BigNumber(amount).multipliedBy(1e18))
+    gasPrice,
+    Number(new BigNumber(amount).multipliedBy(1e18)),
   )
 
   return txHash
