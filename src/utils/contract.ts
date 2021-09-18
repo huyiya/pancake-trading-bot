@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import getWeb3 from './web3'
-import { PancakeFactoryABI, WBNB_ABI } from '../abis'
-import { PANCAKE_FACTORY, WBNB } from '../constants/constants'
+import { PancakeFactoryABI, PancakeRouterABI, WBNB_ABI } from '../abis'
+import { PANCAKE_FACTORY, PANCAKE_ROUTER, WBNB } from '../constants/constants'
 
 const getContract = (abi: any, address: string) => {
   const web3: Web3 = getWeb3()
@@ -11,6 +11,10 @@ const getContract = (abi: any, address: string) => {
 
 export const getPancakeFactory = () => {
   return getContract(PancakeFactoryABI, PANCAKE_FACTORY)
+}
+
+export const getPancakeRouter = () => {
+  return getContract(PancakeRouterABI, PANCAKE_ROUTER)
 }
 
 export const getWBNB = () => {
