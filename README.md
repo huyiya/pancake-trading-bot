@@ -1,3 +1,6 @@
+# Pancake trading bot
+
+## .env
 BSC_WSS = wss://bsc-ws-node.nariox.org:443
 BSC_HTTP = 
 
@@ -8,4 +11,4 @@ TARGET_TOKEN =
 SENDER = 
 PRIVATE_KEY = 
 
-AMOUNT_BNB = 0.01
+AMOUNT_BNB = 
