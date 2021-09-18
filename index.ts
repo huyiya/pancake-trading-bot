@@ -22,7 +22,7 @@ const main = async () => {
       const tx: Transaction = await web3.eth.getTransaction(txHash)
       
       if (tx?.to === PANCAKE_ROUTER) {
-        const gasPrice = Number(tx?.gasPrice) - .05 * Number(tx?.gasPrice)
+        const gasPrice = Number(tx?.gasPrice)
         const txInputDecoded = decoder(tx.input)
 
         if (txInputDecoded?.name === 'addLiquidityETH') {
