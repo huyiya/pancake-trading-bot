@@ -11,7 +11,6 @@ const getWeb3 = () => {
       onTimeout: false
     }
   }))
-
 }
 
 export const getWeb3HTTP = () => {
