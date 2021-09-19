@@ -1,6 +1,7 @@
 # Pancake trading bot
 
-## .env
+### .env
+```bash
 BSC_WSS = wss://bsc-ws-node.nariox.org:443
 BSC_HTTP = 
 
@@ -12,3 +13,4 @@ SENDER =
 PRIVATE_KEY = 
 
 AMOUNT_BNB = 
+```
