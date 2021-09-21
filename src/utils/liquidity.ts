@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { ADDRESS_ZERO } from '../constants/constants'
+import { getZeroAddress } from './addressHelpers'
 import { getPancakeFactory, getWBNB } from './contract'
 
 export const getPair = async (token0: string, token1: string): Promise<string> => {
@@ -12,7 +12,7 @@ export const getPair = async (token0: string, token1: string): Promise<string> =
 const getLiquidity = async (token0: string, token1: string): Promise<number> => {
   const pair = await getPair(token0, token1)
 
-  if (pair === ADDRESS_ZERO) {
+  if (pair === getZeroAddress()) {
     return 0
   }
 

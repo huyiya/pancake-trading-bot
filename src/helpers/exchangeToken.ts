@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import 'dotenv/config'
-import { PANCAKE_ROUTER } from '../constants/constants'
+import { getPancakeRouterAddress } from '../utils/addressHelpers'
 import { getPancakeRouter } from '../utils/contract'
 import getDeadline from '../utils/deadline'
 import getWeb3 from '../utils/web3'
@@ -68,7 +68,7 @@ const buyToken = async (sender: string, path: string[], gasPrice: number, amount
 
   const txHash = await sendSignedTransaction(
     sender,
-    PANCAKE_ROUTER,
+    getPancakeRouterAddress(),
     transaction,
     gasPrice,
     Number(new BigNumber(amount).multipliedBy(1e18)),

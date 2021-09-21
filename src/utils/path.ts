@@ -1,7 +1,7 @@
-import { WBNB } from '../constants/constants'
+import { getWBNBAddress } from './addressHelpers'
 
 const getPath = (token: string): string[] => {
-  return [WBNB, token]
+  return [getWBNBAddress(), token]
 }
 
 export default getPath
