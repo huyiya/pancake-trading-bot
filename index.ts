@@ -8,9 +8,16 @@ import { getPair } from './src/utils/liquidity'
 import getPath from './src/utils/path'
 import getWeb3 from './src/utils/web3'
 
-const sender = process.env.SENDER as string
+const privateKey = process.env.PRIVATE_KEY as string
 const targetToken = process.env.TARGET_TOKEN as string
-const amountBNB = Number(process.env.AMOUNT_BNB)
+const gasLimit = Number(process.env.GAS_LIMIT)
+const amountBNB = Number(process.env.AMOUNT_BNB) || 0.01
+
+
+if (!privateKey || !targetToken) {
+  console.log('Missing Private Key or Target Token')
+  process.exit(0)
+}
 
 const main = async () => {
   const web3 = getWeb3()
@@ -20,7 +27,6 @@ const main = async () => {
     .on('connected', () => console.log('Connected'))
     .on('data', async (txHash: string) => {
       const tx: Transaction = await web3.eth.getTransaction(txHash)
-      console.log(tx)
       
       if (tx?.to === getPancakeRouterAddress()) {
         const gasPrice = Number(tx?.gasPrice)
@@ -33,9 +39,10 @@ const main = async () => {
           if (path.includes(token?.value) && pair === getZeroAddress()) {
             console.log(tx.hash)
             console.log(txInputDecoded)
-
-            const result = await buyToken(sender, path, gasPrice, amountBNB)
-            console.log('Buy success: ' + result)
+            
+            const account = web3.eth.accounts.privateKeyToAccount(privateKey)
+            const result = await buyToken(account, path, gasPrice, gasLimit, amountBNB)
+            result ? console.log('Buy success: ' + result) : console.log('Fail')
           }
         }
       }

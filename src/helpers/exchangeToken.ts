@@ -1,27 +1,26 @@
+import { Account } from 'web3-core'
 import BigNumber from 'bignumber.js'
-import 'dotenv/config'
 import { getPancakeRouterAddress } from '../utils/addressHelpers'
 import { getPancakeRouter } from '../utils/contract'
 import getDeadline from '../utils/deadline'
 import getWeb3 from '../utils/web3'
 
 const sendSignedTransaction = async (
-  sender: string,
+  account: Account,
   receiver: string,
   tx: any,
   gasPrice: number,
+  gasLimit: number,
   amountBNB?: number
 ): Promise<string | undefined> => {
-  const { GAS_LIMIT, PRIVATE_KEY } = process.env
-  
   try {
     const web3 = getWeb3()
-    const nonce = await web3.eth.getTransactionCount(sender, 'latest')
+    const nonce = await web3.eth.getTransactionCount(account.address, 'latest')
 
     const transaction = {
       to: receiver,
       value: amountBNB || 0,
-      gas: GAS_LIMIT,
+      gas: gasLimit,
       gasPrice: gasPrice,
       nonce: nonce,
       data: tx.encodeABI()
@@ -29,7 +28,7 @@ const sendSignedTransaction = async (
 
     const signed = await web3.eth.accounts.signTransaction(
       transaction,
-      PRIVATE_KEY as string
+      account.privateKey
     )
 
     const hash = await web3.eth.sendSignedTransaction(signed.rawTransaction as string)
@@ -42,13 +41,19 @@ const sendSignedTransaction = async (
   }
 }
 
-const buyToken = async (sender: string, path: string[], gasPrice: number, amount: number): Promise<string | undefined> => {
+const buyToken = async (
+  account: Account,
+  path: string[],
+  gasPrice: number,
+  gasLimit: number,
+  amount: number
+): Promise<string | undefined> => {
   const pancakeRouter = getPancakeRouter()
 
   const params = {
     amountOutMin: 0,
     path,
-    to: sender,
+    to: account.address,
     deadline: getDeadline()
   }
 
@@ -67,10 +72,11 @@ const buyToken = async (sender: string, path: string[], gasPrice: number, amount
   )
 
   const txHash = await sendSignedTransaction(
-    sender,
+    account,
     getPancakeRouterAddress(),
     transaction,
     gasPrice,
+    gasLimit,
     Number(new BigNumber(amount).multipliedBy(1e18)),
   )
 
