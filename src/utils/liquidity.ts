@@ -9,7 +9,7 @@ export const getPair = async (token0: string, token1: string): Promise<string> =
   return pair
 }
 
-const getLiquidity = async (token0: string, token1: string): Promise<number> => {
+export const getLiquidity = async (token0: string, token1: string): Promise<number> => {
   const pair = await getPair(token0, token1)
 
   if (pair === getZeroAddress()) {
@@ -21,5 +21,3 @@ const getLiquidity = async (token0: string, token1: string): Promise<number> => 
 
   return Number(new BigNumber(liquidity).div(1e18))
 }
-
-export default getLiquidity

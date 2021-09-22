@@ -6,6 +6,7 @@ import { getPancakeRouterAddress, getWBNBAddress, getZeroAddress } from './src/u
 import decoder from './src/utils/decoder'
 import { getPair } from './src/utils/liquidity'
 import getPath from './src/utils/path'
+import { getBalanceNummber } from './src/utils/utils'
 import getWeb3 from './src/utils/web3'
 
 const privateKey = process.env.PRIVATE_KEY as string
@@ -33,16 +34,18 @@ const main = async () => {
         const txInputDecoded = decoder(tx.input)
 
         if (txInputDecoded?.name === 'addLiquidityETH') {
-          const [token] = txInputDecoded.params
+          const [token, , amountTokenMin, amountETHMin] = txInputDecoded.params
           const pair = await getPair(token?.value as string, getWBNBAddress())
 
           if (path.includes(token?.value) && pair === getZeroAddress()) {
-            console.log(tx.hash)
-            console.log(txInputDecoded)
+            console.log(`[${Date.now()}] Target Token was added: https://bscscan.com/tx/${tx.hash}`)
+            console.log(`${getBalanceNummber(amountTokenMin.value)} Token - ${getBalanceNummber(amountETHMin.value)} BNB`)
             
             const account = web3.eth.accounts.privateKeyToAccount(privateKey)
             const result = await buyToken(account, path, gasPrice, gasLimit, amountBNB)
-            result ? console.log('Buy success: ' + result) : console.log('Fail')
+            result
+              ? console.log(`Buy success: https://bscscan.com/tx/${result}`)
+              : console.log('Fail')
           }
         }
       }
