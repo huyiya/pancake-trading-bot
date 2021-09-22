@@ -1,7 +1,7 @@
 
 import 'dotenv/config'
 import { Transaction } from 'web3-eth'
-import buyToken from './src/helpers/exchangeToken'
+import { buyToken } from './src/helpers/exchangeToken'
 import { getPancakeRouterAddress, getWBNBAddress, getZeroAddress } from './src/utils/addressHelpers'
 import decoder from './src/utils/decoder'
 import { getPair } from './src/utils/liquidity'
@@ -13,7 +13,6 @@ const privateKey = process.env.PRIVATE_KEY as string
 const targetToken = process.env.TARGET_TOKEN as string
 const gasLimit = Number(process.env.GAS_LIMIT)
 const amountBNB = Number(process.env.AMOUNT_BNB) || 0.01
-
 
 if (!privateKey || !targetToken) {
   console.log('Missing Private Key or Target Token')

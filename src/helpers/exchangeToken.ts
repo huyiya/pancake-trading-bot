@@ -41,7 +41,7 @@ const sendSignedTransaction = async (
   }
 }
 
-const buyToken = async (
+export const buyToken = async (
   account: Account,
   path: string[],
   gasPrice: number,
@@ -83,4 +83,42 @@ const buyToken = async (
   return txHash
 }
 
-export default buyToken
+// TODO: approve before sell token
+export const sellToken = async (
+  account: Account,
+  path: string[],
+  gasPrice: number,
+  gasLimit: number,
+  amountTokenSell: number
+) => {
+  const pancakeRouter = getPancakeRouter()
+
+  const params = {
+    amountIn: new BigNumber(amountTokenSell).multipliedBy(1e18),
+    amountOutMin: 0,
+    path,
+    to: account.address,
+    deadline: getDeadline()
+  }
+
+  /**
+   * @function swapExactTokensForETH (uint256 amountIn, uint256 amountOutMin, address[] path, address to, uint256 deadline)
+   */
+  const transaction = await pancakeRouter.methods.swapExactTokensForETH(
+    params.amountIn,
+    params.amountOutMin,
+    params.path,
+    params.to,
+    params.deadline
+  )
+
+  const txHash = await sendSignedTransaction(
+    account,
+    getPancakeRouterAddress(),
+    transaction,
+    gasPrice,
+    gasLimit
+  )
+
+  return txHash
+}
