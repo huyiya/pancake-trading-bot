@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 import getWeb3 from './web3'
-import { PancakeFactoryABI, PancakeRouterABI, WBNB_ABI } from '../abis'
+import { ERC20ABI, PancakeFactoryABI, PancakeRouterABI, WBNB_ABI } from '../abis'
 import { getPancakeFactoryAddress, getPancakeRouterAddress, getWBNBAddress } from './addressHelpers'
 
 const getContract = (abi: any, address: string) => {
@@ -19,6 +19,10 @@ export const getPancakeRouter = () => {
 
 export const getWBNB = () => {
   return getContract(WBNB_ABI, getWBNBAddress())
+}
+
+export const getERC20 = (erc20Address: string) => {
+  return getContract(ERC20ABI, erc20Address)
 }
 
 export default getContract

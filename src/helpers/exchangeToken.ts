@@ -3,43 +3,7 @@ import BigNumber from 'bignumber.js'
 import { getPancakeRouterAddress } from '../utils/addressHelpers'
 import { getPancakeRouter } from '../utils/contract'
 import getDeadline from '../utils/deadline'
-import getWeb3 from '../utils/web3'
-
-const sendSignedTransaction = async (
-  account: Account,
-  receiver: string,
-  tx: any,
-  gasPrice: number,
-  gasLimit: number,
-  amountBNB?: number
-): Promise<string | undefined> => {
-  try {
-    const web3 = getWeb3()
-    const nonce = await web3.eth.getTransactionCount(account.address, 'latest')
-
-    const transaction = {
-      to: receiver,
-      value: amountBNB || 0,
-      gas: gasLimit,
-      gasPrice: gasPrice,
-      nonce: nonce,
-      data: tx.encodeABI()
-    }
-
-    const signed = await web3.eth.accounts.signTransaction(
-      transaction,
-      account.privateKey
-    )
-
-    const hash = await web3.eth.sendSignedTransaction(signed.rawTransaction as string)
-
-    return hash.transactionHash
-  }
-  catch (err) {
-    console.log(err)
-    return
-  }
-}
+import sendSignedTransaction from './sendSignedTx'
 
 export const buyToken = async (
   account: Account,
@@ -83,7 +47,6 @@ export const buyToken = async (
   return txHash
 }
 
-// TODO: approve before sell token
 export const sellToken = async (
   account: Account,
   path: string[],
