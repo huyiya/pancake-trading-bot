@@ -10,30 +10,52 @@ export const buyToken = async (
   path: string[],
   gasPrice: number,
   gasLimit: number,
-  amount: number
+  amount: number,
+  isPurchaseWithBNB: boolean
 ): Promise<string | undefined> => {
   const pancakeRouter = getPancakeRouter()
 
   const params = {
     amountOutMin: 0,
+    amountIn: amount, // If buy with BUSD or other tokens
     path,
     to: account.address,
     deadline: getDeadline()
   }
-
-  /**
-   * @function swapExactETHForTokens (uint amountOutMin, address[] calldata path, address to, uint deadline)
-   * @param {number} amountOutMin - The minimum amount of output tokens that must be received for the transaction not to revert
-   * @param {string[]} path - Pools for each consecutive pair of addresses must exist and have liquidity
-   * @param {string} to - Recipient of the output tokens
-   * @param {number} deadline - Unix timestamp after which the transaction will revert
-   */
-  const transaction = await pancakeRouter.methods.swapExactETHForTokens(
-    params.amountOutMin,
-    params.path,
-    params.to,
-    params.deadline
-  )
+  
+  let transaction
+  if (isPurchaseWithBNB) {
+    /**
+     * @function swapExactETHForTokens (uint amountOutMin, address[] calldata path, address to, uint deadline)
+     * @param {number} amountOutMin - The minimum amount of output tokens that must be received for the transaction not to revert
+     * @param {string[]} path - Pools for each consecutive pair of addresses must exist and have liquidity
+     * @param {string} to - Recipient of the output tokens
+     * @param {number} deadline - Unix timestamp after which the transaction will revert
+     */
+    transaction = await pancakeRouter.methods.swapExactETHForTokens(
+      params.amountOutMin,
+      params.path,
+      params.to,
+      params.deadline
+    )
+  }
+  else {
+    /**
+     * @function swapExactTokensForTokens (uint amountIn,uint amountOutMin, address[] calldata path, address to, uint deadline)
+     * @param {number} amountIn - The amount of input tokens to send
+     * @param {number} amountOutMin - The minimum amount of output tokens that must be received for the transaction not to revert
+     * @param {string[]} path - Pools for each consecutive pair of addresses must exist and have liquidity
+     * @param {string} to - Recipient of the output tokens
+     * @param {number} deadline - Unix timestamp after which the transaction will revert
+     */
+    transaction = await pancakeRouter.methods.swapExactTokensForTokens(
+      new BigNumber(params.amountIn).multipliedBy(1e18),
+      params.amountOutMin,
+      params.path,
+      params.to,
+      params.deadline
+    )
+  }
 
   const txHash = await sendSignedTransaction(
     account,
@@ -41,7 +63,7 @@ export const buyToken = async (
     transaction,
     gasPrice,
     gasLimit,
-    Number(new BigNumber(amount).multipliedBy(1e18)),
+    isPurchaseWithBNB ? Number(new BigNumber(amount).multipliedBy(1e18)) : 0
   )
 
   return txHash

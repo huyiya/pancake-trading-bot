@@ -20,10 +20,14 @@ export const getPancakeRouterAddress = () => {
   return getAddress(addresses.PANCAKE_ROUTER)
 }
 
+export const getZeroAddress = () => {
+  return getAddress(addresses.ADDRESS_ZERO)
+}
+
 export const getWBNBAddress = () => {
   return getAddress(addresses.WBNB)
 }
 
-export const getZeroAddress = () => {
-  return getAddress(addresses.ADDRESS_ZERO)
+export const getBUSDAddress = () => {
+  return getAddress(addresses.BUSD)
 }

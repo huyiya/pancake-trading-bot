@@ -1,7 +1,13 @@
-import { getWBNBAddress } from './addressHelpers'
+import { getBUSDAddress, getWBNBAddress } from './addressHelpers'
 
-const getPath = (token: string, isSell?: boolean): string[] => {
-  return isSell ? [token, getWBNBAddress()] : [getWBNBAddress(), token]
+export const getBNBPath = (token: string, isSell?: boolean): string[] => {
+  return isSell
+    ? [token.toLocaleLowerCase(), getWBNBAddress()]
+    : [getWBNBAddress(), token.toLocaleLowerCase()]
 }
 
-export default getPath
+export const getBUSDPath = (token: string, isSell?: boolean): string[] => {
+  return isSell
+    ? [token.toLocaleLowerCase(), getBUSDAddress()]
+    : [getBUSDAddress(), token.toLocaleLowerCase()]
+}
