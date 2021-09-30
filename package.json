@@ -1,16 +1,23 @@
 {
   "name": "pancakeswap-trading-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple mempool sniper bot 🤖",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node index.ts",
+    "pm2": "pm2 start run.sh --watch -n trading-bot",
+    "logs": "pm2 logs trading-bot --lines 1000"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CaoHuy26/pancakeswap-trading-bot.git"
   },
-  "keywords": [],
+  "keywords": [
+    "pancakeswap",
+    "mempool",
+    "bot",
+    "ido"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -23,6 +30,7 @@
     "bignumber.js": "^9.0.1",
     "dotenv": "^10.0.0",
     "ethereum-input-data-decoder": "^0.3.5",
+    "pm2": "^5.1.1",
     "typescript": "^4.4.3",
     "web3": "^1.5.2"
   }

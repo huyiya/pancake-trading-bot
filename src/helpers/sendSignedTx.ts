@@ -33,7 +33,7 @@ const sendSignedTransaction = async (
   }
   catch (err) {
     console.log(err)
-    return
+    process.exit(0)
   }
 }
 
