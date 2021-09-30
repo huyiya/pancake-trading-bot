@@ -6,7 +6,6 @@ import { getBUSDAddress, getPancakeRouterAddress, getWBNBAddress, getZeroAddress
 import decoder from './src/utils/decoder'
 import { getPair } from './src/utils/liquidity'
 import { getBNBPath, getBUSDPath } from './src/utils/path'
-import { getBalanceNummber } from './src/utils/utils'
 import getWeb3 from './src/utils/web3'
 
 const privateKey = process.env.PRIVATE_KEY as string
@@ -47,22 +46,31 @@ const main = async () => {
         const txInputDecoded = decoder(tx.input)
 
         if (txInputDecoded?.name === methodName) {
-          const [token, , amountTokenMin, amountETHMin] = txInputDecoded.params
+          // token2 exist if liquidity is not BNB
+          // if liquidity is BNB: token2 = amountTokenDesired
+          const [token, token2] = txInputDecoded.params
           const pair = await getPair(token?.value as string, tokenPair)
 
-          if (path.includes(token?.value) && pair === getZeroAddress()) {
+          const checkTokenPair = liquidityInBNB
+            ? path.includes(token?.value)
+            : path.includes(token?.value) && path.includes(token2?.value)
+          if (checkTokenPair && pair === getZeroAddress()) {
             console.log(`[${Date.now()}] Target Token was added: https://bscscan.com/tx/${tx.hash}`)
-            console.log(`${getBalanceNummber(amountTokenMin.value)} Token - ${getBalanceNummber(amountETHMin.value)} BNB`)
 
             const result = await buyToken(account, path, gasPrice, gasLimit, purchaseAmount, liquidityInBNB)
             result
               ? console.log(`Buy success: https://bscscan.com/tx/${result}`)
               : console.log('Fail')
+
+            process.exit(0)
           }
         }
       }
     })
-    .on('error', err => console.log(err))
+    .on('error', err => {
+      console.log(err)
+      process.exit(0)
+    })
 }
 
 main()
