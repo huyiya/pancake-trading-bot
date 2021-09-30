@@ -6,6 +6,7 @@ import { getBUSDAddress, getPancakeRouterAddress, getWBNBAddress, getZeroAddress
 import decoder from './src/utils/decoder'
 import { getPair } from './src/utils/liquidity'
 import { getBNBPath, getBUSDPath } from './src/utils/path'
+import getNameOfToken from './src/utils/token'
 import getWeb3 from './src/utils/web3'
 
 const privateKey = process.env.PRIVATE_KEY as string
@@ -31,10 +32,12 @@ const main = async () => {
   const tokenPair = liquidityInBNB ? getWBNBAddress() : getBUSDAddress()
 
   web3.eth.subscribe('pendingTransactions')
-    .on('connected', () => {
+    .on('connected', async () => {
       console.log('Connected')
+
+      const tokenName = await getNameOfToken(targetToken)
       console.log(`- Buyer: ${account.address}`)
-      console.log(`- Target Token: ${targetToken}`)
+      console.log(`- Target Token: ${targetToken} - ${tokenName}`)
       console.log(`- Liquidity in BNB: ${liquidityInBNB}`)
       console.log(`- Purchase Amount: ${purchaseAmount} ${liquidityInBNB ? 'BNB' : 'BUSD'}`)
     })
