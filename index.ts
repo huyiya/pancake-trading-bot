@@ -3,6 +3,7 @@ import 'dotenv/config'
 import { Transaction } from 'web3-eth'
 import { buyToken } from './src/helpers/exchangeToken'
 import { getBUSDAddress, getPancakeRouterAddress, getWBNBAddress, getZeroAddress } from './src/utils/addressHelpers'
+import { getBscscanUrl } from './src/utils/bscscan'
 import decoder from './src/utils/decoder'
 import { getPair } from './src/utils/liquidity'
 import { getBNBPath, getBUSDPath } from './src/utils/path'
@@ -58,11 +59,11 @@ const main = async () => {
             ? path.includes(token?.value)
             : path.includes(token?.value) && path.includes(token2?.value)
           if (checkTokenPair && pair === getZeroAddress()) {
-            console.log(`[${Date.now()}] Target Token was added: https://bscscan.com/tx/${tx.hash}`)
+            console.log(`[${Date.now()}] Target Token was added: ${getBscscanUrl()}/tx/${tx.hash}`)
 
             const result = await buyToken(account, path, gasPrice, gasLimit, purchaseAmount, liquidityInBNB)
             result
-              ? console.log(`Buy success: https://bscscan.com/tx/${result}`)
+              ? console.log(`Buy success: ${getBscscanUrl()}/tx/${result}`)
               : console.log('Fail')
 
             process.exit(0)
