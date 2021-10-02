@@ -47,7 +47,7 @@ const main = async () => {
       
       if (tx?.to === getPancakeRouterAddress()) {
         const gasPrice = Number(tx?.gasPrice)
-        const txInputDecoded = decoder(tx.input)
+        const txInputDecoded = decoder(tx?.input)
 
         if (txInputDecoded?.name === methodName) {
           // token2 exist if liquidity is not BNB
@@ -73,7 +73,6 @@ const main = async () => {
     })
     .on('error', err => {
       console.log(err)
-      process.exit(0)
     })
 }
 
