@@ -5,7 +5,7 @@ import { buyToken } from './src/helpers/exchangeToken'
 import { getBUSDAddress, getPancakeRouterAddress, getWBNBAddress, getZeroAddress } from './src/utils/addressHelpers'
 import { getBscscanUrl } from './src/utils/bscscan'
 import decoder from './src/utils/decoder'
-import { getPair } from './src/utils/liquidity'
+import { getLiquidity, getPair } from './src/utils/liquidity'
 import { getBNBPath, getBUSDPath } from './src/utils/path'
 import getNameOfToken from './src/utils/token'
 import getWeb3 from './src/utils/web3'
@@ -33,14 +33,24 @@ const main = async () => {
   const methodName = liquidityInBNB ? 'addLiquidityETH' : 'addLiquidity'
   const tokenPair = liquidityInBNB ? getWBNBAddress() : getBUSDAddress()
 
+  const tokenName = await getNameOfToken(targetToken)
+  const lpPair = await getPair(targetToken, tokenPair)
+  let liquidity: number
+  if (lpPair !== getZeroAddress()) {
+    liquidity = await getLiquidity(targetToken, tokenPair)
+  }
+
   web3.eth.subscribe('pendingTransactions')
     .on('connected', async () => {
       logger.info('Connected')
 
-      const tokenName = await getNameOfToken(targetToken)
       logger.info(`- Buyer: ${account.address}`)
       logger.info(`- Target Token: ${targetToken} - ${tokenName}`)
       logger.info(`- Liquidity in BNB: ${liquidityInBNB}`)
+      logger.info(`- LP Pair: ${tokenName}-${liquidityInBNB ? 'BNB' : 'BUSD'}: ${lpPair}`)
+      if (liquidity > 0) {
+        logger.warn(`- Total Liquidity: ${liquidity}`)
+      }
       logger.info(`- Purchase Amount: ${purchaseAmount} ${liquidityInBNB ? 'BNB' : 'BUSD'}`)
     })
     .on('data', async (txHash: string) => {
@@ -49,6 +59,7 @@ const main = async () => {
       if (tx?.to === getPancakeRouterAddress()) {
         const gasPrice = Number(tx?.gasPrice)
         const txInputDecoded = decoder(tx?.input)
+        // logger.info(`${txHash}: ${txInputDecoded?.name}`)
 
         if (txInputDecoded?.name === methodName) {
           // token2 exist if liquidity is not BNB
