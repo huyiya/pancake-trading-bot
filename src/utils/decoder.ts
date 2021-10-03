@@ -6,11 +6,17 @@ const decoder = (input: string | undefined) => {
     return
   }
 
-  abiDecoder.addABI(PancakeRouterABI)
-
-  const result = abiDecoder.decodeMethod(input);
-
-  return result
+  try {
+    abiDecoder.addABI(PancakeRouterABI)
+  
+    const result = abiDecoder.decodeMethod(input);
+  
+    return result
+  }
+  catch (err) {
+    console.log(err)
+    return
+  }
 }
 
 export default decoder
