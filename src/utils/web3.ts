@@ -14,7 +14,7 @@ const getWeb3 = () => {
   return new Web3(new Web3.providers.WebsocketProvider(provider, {
     reconnect: {
       auto: true,
-      delay: 5000, // ms
+      delay: 1, // ms
       maxAttempts: 5,
       onTimeout: false
     }
