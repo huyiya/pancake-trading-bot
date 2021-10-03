@@ -1,5 +1,6 @@
 const abiDecoder = require('abi-decoder')
 import { PancakeRouterABI } from '../abis'
+import logger from './logger'
 
 const decoder = (input: string | undefined) => {
   if (input === undefined) {
@@ -14,7 +15,7 @@ const decoder = (input: string | undefined) => {
     return result
   }
   catch (err) {
-    console.log(err)
+    logger.error(err)
     return
   }
 }

@@ -9,6 +9,7 @@ import { getPair } from './src/utils/liquidity'
 import { getBNBPath, getBUSDPath } from './src/utils/path'
 import getNameOfToken from './src/utils/token'
 import getWeb3 from './src/utils/web3'
+import logger from './src/utils/logger'
 
 const privateKey = process.env.PRIVATE_KEY as string
 const targetToken = process.env.TARGET_TOKEN as string
@@ -18,7 +19,7 @@ const amountBUSD = Number(process.env.AMOUNT_BUSD) || 10
 const liquidityInBNB = Boolean(process.env.LIQUIDITY_IN_BNB === 'true')
 
 if (!privateKey || !targetToken) {
-  console.log('Missing Private Key or Target Token')
+  logger.error('Missing Private Key or Target Token')
   process.exit(0)
 }
 
@@ -34,13 +35,13 @@ const main = async () => {
 
   web3.eth.subscribe('pendingTransactions')
     .on('connected', async () => {
-      console.log('Connected')
+      logger.info('Connected')
 
       const tokenName = await getNameOfToken(targetToken)
-      console.log(`- Buyer: ${account.address}`)
-      console.log(`- Target Token: ${targetToken} - ${tokenName}`)
-      console.log(`- Liquidity in BNB: ${liquidityInBNB}`)
-      console.log(`- Purchase Amount: ${purchaseAmount} ${liquidityInBNB ? 'BNB' : 'BUSD'}`)
+      logger.info(`- Buyer: ${account.address}`)
+      logger.info(`- Target Token: ${targetToken} - ${tokenName}`)
+      logger.info(`- Liquidity in BNB: ${liquidityInBNB}`)
+      logger.info(`- Purchase Amount: ${purchaseAmount} ${liquidityInBNB ? 'BNB' : 'BUSD'}`)
     })
     .on('data', async (txHash: string) => {
       const tx: Transaction = await web3.eth.getTransaction(txHash)
@@ -59,12 +60,12 @@ const main = async () => {
             ? path.includes(token?.value)
             : path.includes(token?.value) && path.includes(token2?.value)
           if (checkTokenPair && pair === getZeroAddress()) {
-            console.log(`[${Date.now()}] Target Token was added: ${getBscscanUrl()}/tx/${tx.hash}`)
+            logger.info(`[${Date.now()}] Target Token was added: ${getBscscanUrl()}/tx/${tx.hash}`)
 
             const result = await buyToken(account, path, gasPrice, gasLimit, purchaseAmount, liquidityInBNB)
             result
-              ? console.log(`Buy success: ${getBscscanUrl()}/tx/${result}`)
-              : console.log('Fail')
+              ? logger.info(`Buy success: ${getBscscanUrl()}/tx/${result}`)
+              : logger.error('Fail')
 
             process.exit(0)
           }
@@ -72,7 +73,7 @@ const main = async () => {
       }
     })
     .on('error', err => {
-      console.log(err)
+      logger.error(err)
     })
 }
 

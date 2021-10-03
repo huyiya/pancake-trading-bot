@@ -1,4 +1,5 @@
 import { Account } from 'web3-core'
+import logger from '../utils/logger'
 import getWeb3 from '../utils/web3'
 
 const sendSignedTransaction = async (
@@ -32,7 +33,7 @@ const sendSignedTransaction = async (
     return hash.transactionHash
   }
   catch (err) {
-    console.log(err)
+    logger.error(err)
     process.exit(0)
   }
 }
