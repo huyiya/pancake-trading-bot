@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { getZeroAddress } from './addressHelpers'
-import { getPancakeFactory, getWBNB } from './contract'
+import { getBUSDAddress, getWBNBAddress, getZeroAddress } from './addressHelpers'
+import { getERC20, getPancakeFactory, getWBNB } from './contract'
 
 export const getPair = async (token0: string, token1: string): Promise<string> => {
   const pancakeFactory = getPancakeFactory()
@@ -9,15 +9,17 @@ export const getPair = async (token0: string, token1: string): Promise<string> =
   return pair
 }
 
-export const getLiquidity = async (token0: string, token1: string): Promise<number> => {
-  const pair = await getPair(token0, token1)
+export const getLiquidity = async (targetToken: string, liquidityToken: string): Promise<number> => {
+  const pair = await getPair(targetToken, liquidityToken)
 
   if (pair === getZeroAddress()) {
     return 0
   }
 
-  const wbnb = getWBNB()
-  const liquidity = await wbnb.methods.balanceOf(pair).call()
+  const liquidityTokenContract = liquidityToken === getWBNBAddress()
+    ? getWBNB()
+    : getERC20(getBUSDAddress())
+  const liquidity = await liquidityTokenContract.methods.balanceOf(pair).call()
 
   return Number(new BigNumber(liquidity).div(1e18))
 }

@@ -31,13 +31,14 @@ const main = async () => {
   const purchaseAmount = liquidityInBNB ? amountBNB : amountBUSD
 
   const methodName = liquidityInBNB ? 'addLiquidityETH' : 'addLiquidity'
-  const tokenPair = liquidityInBNB ? getWBNBAddress() : getBUSDAddress()
+  const liquidityToken = liquidityInBNB ? getWBNBAddress() : getBUSDAddress()
+  const liquidityTokenSymbol = liquidityInBNB ? 'BNB' : 'BUSD'
 
   const tokenName = await getNameOfToken(targetToken)
-  const lpPair = await getPair(targetToken, tokenPair)
+  const lpPair = await getPair(targetToken, liquidityToken)
   let liquidity: number
   if (lpPair !== getZeroAddress()) {
-    liquidity = await getLiquidity(targetToken, tokenPair)
+    liquidity = await getLiquidity(targetToken, liquidityToken)
   }
 
   web3.eth.subscribe('pendingTransactions')
@@ -47,11 +48,11 @@ const main = async () => {
       logger.info(`- Buyer: ${account.address}`)
       logger.info(`- Target Token: ${targetToken} - ${tokenName}`)
       logger.info(`- Liquidity in BNB: ${liquidityInBNB}`)
-      logger.info(`- LP Pair: ${tokenName}-${liquidityInBNB ? 'BNB' : 'BUSD'}: ${lpPair}`)
+      logger.info(`- LP Pair: ${tokenName}-${liquidityTokenSymbol}: ${lpPair}`)
       if (liquidity > 0) {
-        logger.warn(`- Total Liquidity: ${liquidity}`)
+        logger.warn(`- Total Liquidity: ${liquidity.toFixed(3)} ${liquidityTokenSymbol}`)
       }
-      logger.info(`- Purchase Amount: ${purchaseAmount} ${liquidityInBNB ? 'BNB' : 'BUSD'}`)
+      logger.info(`- Purchase Amount: ${purchaseAmount} ${liquidityTokenSymbol}`)
     })
     .on('data', async (txHash: string) => {
       const tx: Transaction = await web3.eth.getTransaction(txHash)
@@ -65,7 +66,7 @@ const main = async () => {
           // token2 exist if liquidity is not BNB
           // if liquidity is BNB: token2 = amountTokenDesired
           const [token, token2] = txInputDecoded.params
-          const pair = await getPair(token?.value as string, tokenPair)
+          const pair = await getPair(token?.value as string, liquidityToken)
 
           const checkTokenPair = liquidityInBNB
             ? path.includes(token?.value)
