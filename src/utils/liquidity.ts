@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { getBUSDAddress, getWBNBAddress, getZeroAddress } from './addressHelpers'
+import { getWBNBAddress, getZeroAddress } from './addressHelpers'
 import { getERC20, getPancakeFactory, getWBNB } from './contract'
 
 export const getPair = async (token0: string, token1: string): Promise<string> => {
@@ -18,7 +18,7 @@ export const getLiquidity = async (targetToken: string, liquidityToken: string):
 
   const liquidityTokenContract = liquidityToken === getWBNBAddress()
     ? getWBNB()
-    : getERC20(getBUSDAddress())
+    : getERC20(liquidityToken)
   const liquidity = await liquidityTokenContract.methods.balanceOf(pair).call()
 
   return Number(new BigNumber(liquidity).div(1e18))
