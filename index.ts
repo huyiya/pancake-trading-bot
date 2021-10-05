@@ -62,7 +62,7 @@ const main = async () => {
       if (tx?.to?.toLowerCase() === getPancakeRouterAddress()) {
         const gasPrice = Number(tx?.gasPrice)
         const txInputDecoded = decoder(tx?.input)
-        logger.info(`${txHash}: ${txInputDecoded?.name}`)
+        // logger.info(`${txHash}: ${txInputDecoded?.name}`)
 
         if (txInputDecoded?.name === methodName) {
           // token2 exist if liquidity is not BNB
@@ -70,9 +70,10 @@ const main = async () => {
           const [token, token2] = txInputDecoded.params
 
           // TODO: optimize 
-          const currentLiquidity = liquidityInBNB 
-            ? await getLiquidity(token?.value as string, liquidityToken)
-            : await getLiquidity(token?.value as string, token2?.value as string)
+          const currentLiquidity = 0
+          // const currentLiquidity = liquidityInBNB 
+          //   ? await getLiquidity(token?.value as string, liquidityToken)
+          //   : await getLiquidity(token?.value as string, token2?.value as string)
 
           const checkTokenPair = liquidityInBNB
             ? path.includes(token?.value)

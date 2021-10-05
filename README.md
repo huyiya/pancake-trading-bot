@@ -35,46 +35,34 @@ $ npm i
 
 ### 4. Run
 ```bash
+$ npm run start
+```
+
+Or (Run in the background)
+
+```
 $ npm run pm2
 ```
 
 ## Flow
 ![Flow-sniper-bot](https://user-images.githubusercontent.com/33257682/135856184-a4ee9f73-d765-47c7-9503-4572da3a71b4.png)
 
-## Examples
-### Add Liquidity ETH
-```js
-{
-  name: 'addLiquidityETH',
-  params: [
-    {
-      name: 'token',
-      value: '0x5ca42204cdaa70d5c773946e69de942b85ca6706',
-      type: 'address'
-    },
-    {
-      name: 'amountTokenDesired',
-      value: '2090000000000000000',
-      type: 'uint256'
-    },
-    {
-      name: 'amountTokenMin',
-      value: '2048200000000000000',
-      type: 'uint256'
-    },
-    {
-      name: 'amountETHMin',
-      value: '22011260993127187',
-      type: 'uint256'
-    },
-    {
-      name: 'to',
-      value: '0x1e75eb18cb551cb256181866f9a027aa2126f4ac',
-      type: 'address'
-    },
-    { name: 'deadline', value: '1632965849', type: 'uint256' }
-  ]
-}
+## Example
+
+> ⚠️ The example is done on the testnet. But in reality, it's more complicated when you have compete with many other bots. This results in your transaction will be delay about **~1 block**
+
+> 🐰 Try Pancakeswap Testnet: https://pancakeswap-test.vercel.app/
+
+```bash
+[17:41:54.849 PM] [info] Connected
+[17:41:54.853 PM] [info] - Network: 97
+[17:41:54.853 PM] [info] - Buyer: 0x8b9A97Eb383d0be96f4c071755AA8bd31eF3eF50
+[17:41:54.853 PM] [info] - Target Token: 0x7a6fdBA9A52c2FB5AA951BEf62a5Bd13A06A11c7 - CAKEB5
+[17:41:54.853 PM] [info] - Liquidity in BNB: false
+[17:41:54.853 PM] [info] - LP Pair (CAKEB5-BUSD): 0x0000000000000000000000000000000000000000
+[17:41:54.853 PM] [info] - Purchase Amount: 60 BUSD
+[17:49:35.964 PM] [info] - 🚀 Target Token was added: https://testnet.bscscan.com/tx/0x1c7335e1a9998521a830b9364919b02e7cce3994825631d82ac60b465120a65c
+[17:49:41.597 PM] [info] - 🥳 Buy success: https://testnet.bscscan.com/tx/0x891fc1b0eebbd21b91400bab69c8b0be8716f65dad8cfe94af2874df7a849fad
 ```
 
 ### Add Liquidity
@@ -84,43 +72,43 @@ $ npm run pm2
   params: [
     {
       name: 'tokenA',
-      value: '0x97641c20355571820f591839d972ad2d38ad9f00',
+      value: '0x7a6fdba9a52c2fb5aa951bef62a5bd13a06a11c7',
       type: 'address'
     },
     {
       name: 'tokenB',
-      value: '0xe9e7cea3dedca5984780bafc599bd69add087d56',
+      value: '0x2becd5bea6b1f32cf291c602383ad689f46742aa',
       type: 'address'
     },
     {
       name: 'amountADesired',
-      value: '3988969714144387799899',
+      value: '100000000000000000000',
       type: 'uint256'
     },
     {
       name: 'amountBDesired',
-      value: '1313420514796066633164',
+      value: '100000000000000000000',
       type: 'uint256'
     },
     {
       name: 'amountAMin',
-      value: '3957057956431232697499',
+      value: '100000000000000000000',
       type: 'uint256'
     },
     {
       name: 'amountBMin',
-      value: '1302913150677698100098',
+      value: '100000000000000000000',
       type: 'uint256'
     },
     {
       name: 'to',
-      value: '0x09e44cdfdd15f3b3ab15bf1768e9faa9759ccb59',
+      value: '0x930a6ac63a0ddc209f2f99d526965f2866e82da1',
       type: 'address'
     },
-    { name: 'deadline', value: '1632965890', type: 'uint256' }
+    { name: 'deadline', value: '1633432169', type: 'uint256' }
   ]
 }
 ```
 
-## Risks
+## ⛔️ Risks
 - This is a demo
