@@ -9,7 +9,11 @@ export const getPair = async (token0: string, token1: string): Promise<string> =
   return pair
 }
 
-export const getLiquidity = async (targetToken: string, liquidityToken: string): Promise<number> => {
+export const getLiquidity = async (targetToken: string | undefined, liquidityToken: string | undefined): Promise<number> => {
+  if (!targetToken || !liquidityToken) {
+    return -1
+  }
+  
   const pair = await getPair(targetToken, liquidityToken)
 
   if (pair === getZeroAddress()) {

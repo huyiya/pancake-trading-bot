@@ -7,10 +7,11 @@ import { getBscscanUrl } from './src/utils/bscscan'
 import decoder from './src/utils/decoder'
 import { getLiquidity, getPair } from './src/utils/liquidity'
 import { getBNBPath, getBUSDPath } from './src/utils/path'
-import getNameOfToken from './src/utils/token'
+import { getSymbolOfToken } from './src/utils/token'
 import getWeb3 from './src/utils/web3'
 import logger from './src/utils/logger'
 
+const chainId = process.env.CHAIN_ID as string
 const privateKey = process.env.PRIVATE_KEY as string
 const targetToken = process.env.TARGET_TOKEN as string
 const gasLimit = Number(process.env.GAS_LIMIT)
@@ -34,7 +35,7 @@ const main = async () => {
   const liquidityToken = liquidityInBNB ? getWBNBAddress() : getBUSDAddress()
   const liquidityTokenSymbol = liquidityInBNB ? 'BNB' : 'BUSD'
 
-  const tokenName = await getNameOfToken(targetToken)
+  const targetTokenSymbol = await getSymbolOfToken(targetToken)
   const lpPair = await getPair(targetToken, liquidityToken)
   let liquidity: number
   if (lpPair !== getZeroAddress()) {
@@ -45,10 +46,11 @@ const main = async () => {
     .on('connected', async () => {
       logger.info('Connected')
 
+      logger.info(`- Network: ${chainId}`)
       logger.info(`- Buyer: ${account.address}`)
-      logger.info(`- Target Token: ${targetToken} - ${tokenName}`)
+      logger.info(`- Target Token: ${targetToken} - ${targetTokenSymbol}`)
       logger.info(`- Liquidity in BNB: ${liquidityInBNB}`)
-      logger.info(`- LP Pair: ${tokenName}-${liquidityTokenSymbol}: ${lpPair}`)
+      logger.info(`- LP Pair (${targetTokenSymbol}-${liquidityTokenSymbol}): ${lpPair}`)
       if (liquidity > 0) {
         logger.warn(`- Total Liquidity: ${liquidity.toFixed(3)} ${liquidityTokenSymbol}`)
       }
@@ -57,27 +59,31 @@ const main = async () => {
     .on('data', async (txHash: string) => {
       const tx: Transaction = await web3.eth.getTransaction(txHash)
       
-      if (tx?.to === getPancakeRouterAddress()) {
+      if (tx?.to?.toLowerCase() === getPancakeRouterAddress()) {
         const gasPrice = Number(tx?.gasPrice)
         const txInputDecoded = decoder(tx?.input)
-        // logger.info(`${txHash}: ${txInputDecoded?.name}`)
+        logger.info(`${txHash}: ${txInputDecoded?.name}`)
 
         if (txInputDecoded?.name === methodName) {
           // token2 exist if liquidity is not BNB
           // if liquidity is BNB: token2 = amountTokenDesired
           const [token, token2] = txInputDecoded.params
-          const pair = await getPair(token?.value as string, liquidityToken)
+
+          // TODO: optimize 
+          const currentLiquidity = liquidityInBNB 
+            ? await getLiquidity(token?.value as string, liquidityToken)
+            : await getLiquidity(token?.value as string, token2?.value as string)
 
           const checkTokenPair = liquidityInBNB
             ? path.includes(token?.value)
             : path.includes(token?.value) && path.includes(token2?.value)
-          if (checkTokenPair && pair === getZeroAddress()) {
-            logger.info(`[${Date.now()}] Target Token was added: ${getBscscanUrl()}/tx/${tx.hash}`)
+          if (checkTokenPair && currentLiquidity === 0) {
+            logger.info(`- 🚀 Target Token was added: ${getBscscanUrl()}/tx/${tx.hash}`)
 
             const result = await buyToken(account, path, gasPrice, gasLimit, purchaseAmount, liquidityInBNB)
             result
-              ? logger.info(`Buy success: ${getBscscanUrl()}/tx/${result}`)
-              : logger.error('Fail')
+              ? logger.info(`- 🥳 Buy success: ${getBscscanUrl()}/tx/${result}`)
+              : logger.error('- 🥺 Fail')
 
             process.exit(0)
           }
