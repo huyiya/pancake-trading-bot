@@ -1,7 +1,7 @@
 # Pancake trading bot
 
 ## Motivation
-![JOJO-1d](https://user-images.githubusercontent.com/33257682/135823603-97454050-ea81-41cd-8750-ddcf17adc899.png)
+![motivation](./asset/image/motivation.png)
 
 ## Usage
 ### 1. Clone this repository
@@ -45,13 +45,12 @@ $ npm run pm2
 ```
 
 ## Flow
-![Flow-sniper-bot](https://user-images.githubusercontent.com/33257682/135856184-a4ee9f73-d765-47c7-9503-4572da3a71b4.png)
+![flow](./asset/image/flow.png)
 
 ## Example
 
 > ⚠️ The example is done on the testnet. But in reality, it's more complicated when you have compete with many other bots. This results in your transaction will be delay about **~1 block**
 
-> 🐰 Try Pancakeswap Testnet: https://pancakeswap-test.vercel.app/
 
 ```bash
 [17:41:54.849 PM] [info] Connected
